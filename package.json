@@ -1,0 +1,33 @@
+{
+  "name": "liverender",
+  "version": "0.2.0",
+  "description": "Reload the page body at a specified rate via a script attribute",
+  "homepage": "https://github.com/franciscop/liverender",
+  "funding": "https://www.paypal.me/franciscopresencia/19",
+  "repository": "github:franciscop/liverender",
+  "author": "Francisco Presencia <public@francisco.io> (https://francisco.io/)",
+  "license": "MIT",
+  "keywords": [
+    "live",
+    "reload",
+    "refresh",
+    "browser",
+    "polling"
+  ],
+  "main": "index.min.js",
+  "files": [
+    "index.min.js"
+  ],
+  "type": "module",
+  "scripts": {
+    "build": "bun build src/index.ts --outfile=index.min.js --format=iife --minify",
+    "lint": "tsc",
+    "size": "echo $(gzip -c index.min.js | wc -c) bytes",
+    "start": "bun test --watch",
+    "test": "bun test"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.3.11",
+    "typescript": "^5.7.3"
+  }
+}
