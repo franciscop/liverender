@@ -1,6 +1,7 @@
-import { describe, expect, it, beforeEach } from "bun:test";
+import { describe, expect, it } from "bun:test";
 import parse from "./parse";
-import { findRate, reload } from "./index";
+import { findRate } from "./index";
+import { patch } from "./patch";
 
 describe("parse", () => {
   it("parses seconds", () => {
@@ -72,31 +73,52 @@ describe("findRate", () => {
   });
 });
 
-describe("reload", () => {
-  let fetchedUrls: string[] = [];
+describe("patch", () => {
+  function wrap(html: string): HTMLDivElement {
+    const el = document.createElement("div");
+    el.innerHTML = html;
+    return el;
+  }
 
-  beforeEach(() => {
-    fetchedUrls = [];
-    (globalThis as any).fetch = async (url: string) => {
-      fetchedUrls.push(url);
-      return { text: async () => "<html><body><p>Updated</p></body></html>" };
-    };
-    (globalThis as any).DOMParser = class {
-      parseFromString(html: string) {
-        const match = /<body[^>]*>([\s\S]*?)<\/body>/i.exec(html);
-        return { body: { innerHTML: match?.[1] ?? "" } };
-      }
-    };
-    (globalThis as any).document = { body: { innerHTML: "old" } };
+  it("updates text content", () => {
+    const c = wrap("<p>old</p>");
+    patch(c.firstChild!, wrap("<p>new</p>").firstChild!);
+    expect(c.firstChild!.textContent).toBe("new");
   });
 
-  it("fetches the given URL", async () => {
-    await reload("http://localhost/test");
-    expect(fetchedUrls).toEqual(["http://localhost/test"]);
+  it("updates an attribute", () => {
+    const c = wrap('<div class="a"></div>');
+    patch(c.firstChild!, wrap('<div class="b"></div>').firstChild!);
+    expect((c.firstChild as Element).getAttribute("class")).toBe("b");
   });
 
-  it("replaces document body", async () => {
-    await reload("http://localhost/test");
-    expect((globalThis as any).document.body.innerHTML).toBe("<p>Updated</p>");
+  it("removes attributes absent in next", () => {
+    const c = wrap('<div class="a" id="x"></div>');
+    patch(c.firstChild!, wrap('<div class="a"></div>').firstChild!);
+    expect((c.firstChild as Element).hasAttribute("id")).toBe(false);
+  });
+
+  it("appends new children", () => {
+    const c = wrap("<ul><li>a</li></ul>");
+    patch(c.firstChild!, wrap("<ul><li>a</li><li>b</li></ul>").firstChild!);
+    expect((c.firstChild as Element).children.length).toBe(2);
+  });
+
+  it("removes extra children", () => {
+    const c = wrap("<ul><li>a</li><li>b</li></ul>");
+    patch(c.firstChild!, wrap("<ul><li>a</li></ul>").firstChild!);
+    expect((c.firstChild as Element).children.length).toBe(1);
+  });
+
+  it("replaces a node when tag name differs", () => {
+    const c = wrap("<div>x</div>");
+    patch(c.firstChild!, wrap("<span>x</span>").firstChild!);
+    expect((c.firstChild as Element).tagName.toLowerCase()).toBe("span");
+  });
+
+  it("patches nested content", () => {
+    const c = wrap("<div><p>old</p></div>");
+    patch(c.firstChild!, wrap("<div><p>new</p></div>").firstChild!);
+    expect(c.querySelector("p")!.textContent).toBe("new");
   });
 });
