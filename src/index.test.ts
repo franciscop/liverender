@@ -1,6 +1,6 @@
 import { describe, expect, it } from "bun:test";
 import parse from "./parse";
-import { findRate } from "./index";
+import { findRefresh } from "./index";
 import { patch } from "./patch";
 
 describe("parse", () => {
@@ -41,35 +41,31 @@ describe("parse", () => {
   });
 });
 
-describe("findRate", () => {
-  function makeEl(attrs: string[]): Element {
-    return {
-      attributes: attrs.map((name) => ({ name, value: "" })),
-    } as unknown as Element;
+describe("findRefresh", () => {
+  function makeEl(refresh?: string): Element {
+    const el = document.createElement("script");
+    if (refresh) el.setAttribute("data-refresh", refresh);
+    return el;
   }
 
-  it("returns ms for rate-5s", () => {
-    expect(findRate(makeEl(["rate-5s"]))).toBe(5000);
+  it("returns ms for 5s", () => {
+    expect(findRefresh(makeEl("5s"))).toBe(5000);
   });
 
-  it("returns ms for rate-10m", () => {
-    expect(findRate(makeEl(["rate-10m"]))).toBe(600_000);
+  it("returns ms for 10m", () => {
+    expect(findRefresh(makeEl("10m"))).toBe(600_000);
   });
 
-  it("returns ms for rate-1h", () => {
-    expect(findRate(makeEl(["rate-1h"]))).toBe(3_600_000);
+  it("returns ms for 1h", () => {
+    expect(findRefresh(makeEl("1h"))).toBe(3_600_000);
   });
 
-  it("ignores other attributes and finds rate", () => {
-    expect(findRate(makeEl(["src", "async", "rate-30s"]))).toBe(30_000);
+  it("returns null when attribute is absent", () => {
+    expect(findRefresh(makeEl())).toBeNull();
   });
 
-  it("returns null when no rate attribute", () => {
-    expect(findRate(makeEl(["src", "defer"]))).toBeNull();
-  });
-
-  it("returns null for invalid rate value", () => {
-    expect(findRate(makeEl(["rate-invalid"]))).toBeNull();
+  it("returns null for an invalid value", () => {
+    expect(findRefresh(makeEl("invalid"))).toBeNull();
   });
 });
 

@@ -3,36 +3,36 @@
 Reload the page content at a set interval by diffing and patching the live DOM — no full page refresh, only the parts that changed are updated.
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/liverender" rate-5s></script>
+<script data-refresh="5s" src="https://cdn.jsdelivr.net/npm/liverender"></script>
 ```
 
 > **This library is designed for very simple, very static websites** — think dashboards, status pages, or server-rendered HTML that updates periodically. It will not work correctly for pages that rely on JavaScript-driven UI, client-side routing, or dynamic `<script>` injection.
 
 ## Usage
 
-Add the script tag to your HTML with a `rate-*` attribute specifying how often to reload:
+Add the script tag to your HTML with a `data-refresh` attribute specifying how often to reload:
 
 ```html
 <!-- Reload every 5 seconds -->
-<script src="https://cdn.jsdelivr.net/npm/liverender" rate-5s></script>
+<script data-refresh="5s" src="https://cdn.jsdelivr.net/npm/liverender"></script>
 
 <!-- Reload every 30 seconds -->
-<script src="https://cdn.jsdelivr.net/npm/liverender" rate-30s></script>
+<script data-refresh="30s" src="https://cdn.jsdelivr.net/npm/liverender"></script>
 
 <!-- Reload every 2 minutes -->
-<script src="https://cdn.jsdelivr.net/npm/liverender" rate-2m></script>
+<script data-refresh="2m" src="https://cdn.jsdelivr.net/npm/liverender"></script>
 ```
 
 ## Supported time units
 
-| Unit | Attribute example | Interval |
-|------|-------------------|----------|
-| Seconds | `rate-10s`, `rate-10sec` | 10 s |
-| Minutes | `rate-5m`, `rate-5min` | 5 min |
-| Hours | `rate-1h`, `rate-1hr` | 1 h |
-| Days | `rate-1d` | 24 h |
-| Weeks | `rate-1w`, `rate-1wk` | 7 days |
-| Milliseconds | `rate-500ms` | 500 ms |
+| Unit | Example | Interval |
+|------|---------|----------|
+| Seconds | `data-refresh="10s"` | 10 s |
+| Minutes | `data-refresh="5m"` | 5 min |
+| Hours | `data-refresh="1h"` | 1 h |
+| Days | `data-refresh="1d"` | 24 h |
+| Weeks | `data-refresh="1w"` | 7 days |
+| Milliseconds | `data-refresh="500ms"` | 500 ms |
 
 ## How it works
 
@@ -60,7 +60,7 @@ npm install liverender
 Or load directly from a CDN (no build step needed):
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/liverender" rate-5s></script>
+<script data-refresh="5s" src="https://cdn.jsdelivr.net/npm/liverender"></script>
 ```
 
 ## License
