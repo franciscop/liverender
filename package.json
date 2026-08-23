@@ -1,6 +1,6 @@
 {
   "name": "liverender",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Reload the page body at a specified rate via a script attribute",
   "repository": "github:franciscop/liverender",
   "author": "Francisco Presencia <public@francisco.io> (https://francisco.io/)",
