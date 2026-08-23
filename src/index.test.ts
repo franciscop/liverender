@@ -1,6 +1,6 @@
 import { describe, expect, it } from "bun:test";
 import parse from "./parse";
-import { findRefresh } from "./index";
+import { findRefresh, reload } from "./index";
 import { patch } from "./patch";
 
 describe("parse", () => {
@@ -116,5 +116,22 @@ describe("patch", () => {
     const c = wrap("<div><p>old</p></div>");
     patch(c.firstChild!, wrap("<div><p>new</p></div>").firstChild!);
     expect(c.querySelector("p")!.textContent).toBe("new");
+  });
+});
+
+describe("reload", () => {
+  it("bypasses the HTTP cache", async () => {
+    const calls: RequestInit[] = [];
+    const original = globalThis.fetch;
+    globalThis.fetch = ((_url: string, init: RequestInit) => {
+      calls.push(init);
+      return Promise.resolve(new Response("<html><body>hi</body></html>"));
+    }) as typeof fetch;
+    try {
+      await reload("/somewhere");
+    } finally {
+      globalThis.fetch = original;
+    }
+    expect(calls[0]?.cache).toBe("no-store");
   });
 });

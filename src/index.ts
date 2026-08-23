@@ -9,7 +9,10 @@ export function findRefresh(el: Element): number | null {
 }
 
 export async function reload(href = location.href): Promise<void> {
-  const res = await fetch(href);
+  // Never read the HTTP cache: a page that sets Cache-Control (to make itself
+  // prefetchable, say) would otherwise be re-rendered from the same cached copy
+  // until it expired, and the refresh would silently show nothing new.
+  const res = await fetch(href, { cache: "no-store" });
   const text = await res.text();
   const doc = new DOMParser().parseFromString(text, "text/html");
   patch(document.documentElement, doc.documentElement);
