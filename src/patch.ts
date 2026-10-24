@@ -8,13 +8,20 @@ function patchAttrs(current: Element, next: Element): void {
 }
 
 export function patch(current: Node, next: Node): void {
-  if (current.nodeType !== next.nodeType || current.nodeName !== next.nodeName) {
+  if (
+    current.nodeType !== next.nodeType ||
+    current.nodeName !== next.nodeName
+  ) {
     current.parentNode!.replaceChild(next.cloneNode(true), current);
     return;
   }
 
-  if (current.nodeType === Node.TEXT_NODE || current.nodeType === Node.COMMENT_NODE) {
-    if (current.textContent !== next.textContent) current.textContent = next.textContent;
+  if (
+    current.nodeType === Node.TEXT_NODE ||
+    current.nodeType === Node.COMMENT_NODE
+  ) {
+    if (current.textContent !== next.textContent)
+      current.textContent = next.textContent;
     return;
   }
 

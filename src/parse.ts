@@ -2,10 +2,13 @@ const times = /(-?(?:\d+\.?\d*|\d*\.?\d+)(?:e[-+]?\d+)?)\s*([\p{L}]*)/iu;
 
 type Parse = {
   (str: string | number | null | undefined): number | null;
-  [key: string]: number | ((str: string | number | null | undefined) => number | null);
+  [key: string]:
+    number | ((str: string | number | null | undefined) => number | null);
 };
 
-const parse = function (str: string | number | null | undefined): number | null {
+const parse = function (
+  str: string | number | null | undefined,
+): number | null {
   if (str === null || str === undefined) return null;
   if (typeof str === "number") return str;
   const cleaned = str.toLowerCase().replace(/[,_]/g, "");
