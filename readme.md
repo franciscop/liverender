@@ -1,12 +1,12 @@
 # liverender [![npm install liverender](https://img.shields.io/badge/npm%20install-liverender-blue.svg)](https://www.npmjs.com/package/liverender) [![test badge](https://github.com/franciscop/liverender/workflows/tests/badge.svg "test badge")](https://github.com/franciscop/liverender/actions) [![gzip size](https://img.badgesize.io/franciscop/liverender/master/index.min.js.svg?label=gzip&logo=&compression=gzip)](https://github.com/franciscop/liverender/blob/master/index.min.js) [![dependencies](https://img.shields.io/badge/dependencies-0-limegreen.svg)](https://github.com/franciscop/liverender/blob/master/package.json)
 
-Reload the page content at a set interval by diffing and patching the live DOM — no full page refresh, only the parts that changed are updated.
+Reload the page content at a set interval by diffing and patching the live DOM. There is no full page refresh: only the parts that changed are updated.
 
 ```html
 <script data-refresh="5s" src="https://cdn.jsdelivr.net/npm/liverender"></script>
 ```
 
-> **This library is designed for very simple, very static websites** — think dashboards, status pages, or server-rendered HTML that updates periodically. It will not work correctly for pages that rely on JavaScript-driven UI, client-side routing, or dynamic `<script>` injection.
+> **This library is designed for very simple, very static websites**: think dashboards, status pages, or server-rendered HTML that updates periodically. It will not work correctly for pages that rely on JavaScript-driven UI, client-side routing, or dynamic `<script>` injection.
 
 ## Usage
 
@@ -36,7 +36,7 @@ Add the script tag to your HTML with a `data-refresh` attribute specifying how o
 
 ## How it works
 
-On each interval, liverender fetches the current page URL, parses the response as HTML, and walks both the live document and the fetched document from `<html>` down — diffing and patching only the nodes that actually changed. Text changes, attribute updates, added or removed elements are all handled; unchanged nodes are left alone.
+On each interval, liverender fetches the current page URL, parses the response as HTML, and walks both the live document and the fetched document from `<html>` down, diffing and patching only the nodes that actually changed. Text changes, attribute updates, added or removed elements are all handled; unchanged nodes are left alone.
 
 Because nodes are patched in place rather than replaced wholesale, the browser does not re-run `<script>` tags that appear in the fetched HTML. This is intentional for the liverender script itself (you don't want it to restart its own timer), but it also means **any other `<script>` tags in the page will not execute on subsequent fetches**. Similarly, event listeners attached via JavaScript will be lost when the element they're bound to is replaced.
 
